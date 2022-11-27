@@ -1,0 +1,53 @@
+name: Java CI with Maven
+
+on:
+  workflow_call:
+    inputs:
+      repository:
+        type: string
+        required: true
+      branch:
+        type: string
+        required: true
+      java-home:
+        type: string
+        required: true
+      maven-home:
+        type: string
+        required: true
+      pom-file:
+        type: string
+        required: false
+    secrets:
+      token:
+        required: true
+        
+jobs:
+  build:
+
+    runs-on: self-hosted
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        repository: ${{ inputs.repository }}
+        ref: ${{ inputs.branch }}
+        token: ${{ inputs.token }}
+    - name: Set parameters
+      id: parameters
+      run: |
+        "${{ inputs.java-home }}" >> $env:GITHUB_PATH
+        "${{ inputs.maven-home }}" >> $env:GITHUB_PATH
+        if ("${{ inputs.pom-file }}" -eq "") {
+          "pom-file=pom.xml" >> $env:GITHUB_OUTPUT
+        } else {
+          "pom-file=${{ inputs.pom-file }}" >> $env:GITHUB_OUTPUT
+        }
+      
+    - name: Build with Maven
+      run: mvn -B package --file ${{ steps.parameters.ouputs.pom-file }}
+
+    # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
+    - name: Update dependency graph
+      uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
+

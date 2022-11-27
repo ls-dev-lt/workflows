@@ -18,8 +18,8 @@ on:
       pom-file:
         type: string
         required: false
-    secrets:
       token:
+        type: string
         required: true
         
 jobs:

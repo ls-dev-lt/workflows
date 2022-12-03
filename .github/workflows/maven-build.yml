@@ -9,22 +9,17 @@ on:
       branch:
         type: string
         required: true
-      java-home:
-        type: string
-        required: true
-      maven-home:
-        type: string
-        required: true
       pom-file:
         type: string
         required: false
-      token:
-        type: string
-        required: true
+
+
         
 jobs:
   build:
-
+    env:
+      java-home: secrets.JAVA_HOME
+      maven-home: secrets.MAVEN_HOME
     runs-on: self-hosted
 
     steps:
@@ -32,7 +27,6 @@ jobs:
       with:
         repository: ${{ inputs.repository }}
         ref: ${{ inputs.branch }}
-        token: ${{ inputs.token }}
     - name: Set parameters
       id: parameters
       run: |

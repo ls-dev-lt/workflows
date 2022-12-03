@@ -30,8 +30,9 @@ jobs:
     - name: Set parameters
       id: parameters
       run: |
-        "${{ inputs.java-home }}" >> $env:GITHUB_PATH
-        "${{ inputs.maven-home }}" >> $env:GITHUB_PATH
+        "${{ env.java-home }}" >> $env:GITHUB_PATH
+        "${{ env.maven-home }}" >> $env:GITHUB_PATH
+        
         if ("${{ inputs.pom-file }}" -eq "") {
           "pom-file=pom.xml" >> $env:GITHUB_OUTPUT
         } else {
